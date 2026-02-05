@@ -35,7 +35,7 @@ public class RedAutoFar extends LinearOpMode {
     private static final double FAR_FIXED_TARGET_RPM = FAR_FIXED_POWER * MAX_RPM;
 
     // Wait until it hits 4000 RPM before feeding
-    private static final double READY_RPM = 4000;
+    private static final double READY_RPM = 3200;
 
     // Timeout so it doesn't hang forever
     private static final long SPINUP_TIMEOUT_MS = 4000;
@@ -115,19 +115,22 @@ public class RedAutoFar extends LinearOpMode {
         // Blue: startPose (0,0, 90), strafeTo(44,0) then (44, 70)
         // Red : startPose (0,0,-90), strafeTo(44,0) then (44,-70)
         Action IntakeFirstRow = drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(44, 0))
-                .strafeTo(new Vector2d(44, -70))
+                .strafeTo(new Vector2d(25, 0))
+                .strafeTo(new Vector2d(25, -25))
                 .build();
 
         // Blue: from (44,70, 12) -> (10,10)
         // Red : from (44,-70,-12) -> (10,-10)
-        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(44, -70, Math.toRadians(-12)))
-                .strafeTo(new Vector2d(10, -10))
+        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(25, -25, Math.toRadians(-90)))
+                .strafeTo(new Vector2d(0, 0))
+                .strafeTo(new Vector2d(0, 0))
+                .turnTo(Math.toRadians(-12))
+
                 .build();
 
         // Blue: from (10,10, 165) -> (30,60)
         // Red : from (10,-10,-165) -> (30,-60)
-        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(10, -10, Math.toRadians(-165)))
+        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(-165)))
                 .strafeTo(new Vector2d(30, -60))
                 .build();
 
