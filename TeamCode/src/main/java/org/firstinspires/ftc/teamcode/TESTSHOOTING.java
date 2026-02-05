@@ -163,8 +163,8 @@ public class TESTSHOOTING extends LinearOpMode {
             // =====================
             // Manual hood adjust (dpad)
             // =====================
-            if (gamepad1.dpad_up) hoodPos += HOOD_STEP;
-            if (gamepad1.dpad_down) hoodPos -= HOOD_STEP;
+            if (gamepad2.dpad_up) hoodPos += HOOD_STEP;
+            if (gamepad2.dpad_down) hoodPos -= HOOD_STEP;
             hoodPos = Math.max(0, Math.min(1, hoodPos));
 
             // =====================
@@ -180,8 +180,8 @@ public class TESTSHOOTING extends LinearOpMode {
             // =====================
             // Edge detection
             // =====================
-            boolean xNow = gamepad1.x;
-            boolean lbNow = gamepad1.left_bumper;
+            boolean xNow = gamepad2.x;
+            boolean lbNow = gamepad2.left_bumper;
 
             boolean xPressed = xNow && !xPrev;
             boolean xReleased = !xNow && xPrev;
@@ -253,10 +253,10 @@ public class TESTSHOOTING extends LinearOpMode {
             }
             else {
                 // Normal manual mode (right trigger)
-                if (gamepad1.left_trigger > 0.1) {
+                if (gamepad2.left_trigger > 0.1) {
                     targetRPM = 0;
                 } else {
-                    targetRPM = gamepad1.right_trigger * liveBasePower * MAX_RPM;
+                    targetRPM = gamepad2.right_trigger * liveBasePower * MAX_RPM;
                 }
             }
 
@@ -294,15 +294,15 @@ public class TESTSHOOTING extends LinearOpMode {
                 intake.setPower(FEED_POWER);
                 feeder.setPower(FEED_POWER);
             }
-            else if (gamepad1.a) {
+            else if (gamepad2.a) {
                 intake.setPower(1.0);
                 feeder.setPower(0.0);
             }
-            else if (gamepad1.y) {
+            else if (gamepad2.y) {
                 intake.setPower(0.75);
                 feeder.setPower(0.75);
             }
-            else if (gamepad1.b) {
+            else if (gamepad2.b) {
                 intake.setPower(-0.2);
                 feeder.setPower(-1.0);
             }
