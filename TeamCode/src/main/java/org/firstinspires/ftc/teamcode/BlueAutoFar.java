@@ -25,7 +25,7 @@ import java.util.List;
 public class BlueAutoFar extends LinearOpMode {
 
     // =========================
-    // Shooter constants (match your TeleOp style)
+    // Shooter constants (match your TeleOp style
     // =========================
     private static final double TICKS_PER_REV = 28.0;
     private static final double MAX_RPM = 5200;
