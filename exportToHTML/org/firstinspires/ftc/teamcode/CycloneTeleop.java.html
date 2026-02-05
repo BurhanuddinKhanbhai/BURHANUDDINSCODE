@@ -1,0 +1,287 @@
+<html>
+<head>
+<title>CycloneTeleop.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CycloneTeleop.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">teamcode</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">Disabled</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">TeleOp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">LinearOpMode</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">DcMotor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">DcMotorEx</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">DcMotorSimple</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">Servo</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">VisionPortal</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">apriltag</span><span class="s2">.</span><span class="s1">AprilTagProcessor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">apriltag</span><span class="s2">.</span><span class="s1">AprilTagDetection</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">teamcode</span><span class="s2">.</span><span class="s1">TagDistanceCache</span><span class="s2">;</span>
+
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ElapsedTime</span><span class="s2">;</span>
+
+<span class="s1">@Disabled</span>
+<span class="s1">@TeleOp</span><span class="s2">(</span><span class="s1">name</span><span class="s2">=</span><span class="s3">&quot;CycloneTeleop&quot;</span><span class="s2">, </span><span class="s1">group</span><span class="s2">=</span><span class="s3">&quot;Robot&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">CycloneTeleop </span><span class="s0">extends </span><span class="s1">LinearOpMode </span><span class="s2">{</span>
+
+    <span class="s4">// ===== Drivetrain =====</span>
+    <span class="s1">DcMotor fl</span><span class="s2">, </span><span class="s1">fr</span><span class="s2">, </span><span class="s1">bl</span><span class="s2">, </span><span class="s1">br</span><span class="s2">;</span>
+
+    <span class="s4">// ===== Shooter =====</span>
+    <span class="s1">DcMotorEx launcher</span><span class="s2">;</span>
+
+    <span class="s4">// ===== Intakes =====</span>
+    <span class="s1">DcMotor intake</span><span class="s2">;</span>
+    <span class="s1">DcMotor feeder</span><span class="s2">;</span>
+
+    <span class="s4">// ===== Hood =====</span>
+    <span class="s1">Servo hoodL</span><span class="s2">, </span><span class="s1">hoodR</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">hoodPos </span><span class="s2">= </span><span class="s5">0.33</span><span class="s2">;</span>
+
+    <span class="s4">// ===== Camera =====</span>
+    <span class="s1">VisionPortal portal</span><span class="s2">;</span>
+    <span class="s1">AprilTagProcessor aprilTag</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">distance </span><span class="s2">= -</span><span class="s5">1</span><span class="s2">;</span>
+    <span class="s1">TagDistanceCache tagCache</span><span class="s2">;</span>
+
+    <span class="s4">// Optional: hold last good basePower so it doesn’t jump when tag drops</span>
+    <span class="s0">double </span><span class="s1">lastBasePower </span><span class="s2">= </span><span class="s5">0.0</span><span class="s2">;</span>
+
+
+    <span class="s4">// ===== TUNING VALUES =====</span>
+    <span class="s0">double </span><span class="s1">CLOSE_DIST </span><span class="s2">= </span><span class="s5">3000</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">MID_DIST   </span><span class="s2">= </span><span class="s5">3900</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">FAR_DIST   </span><span class="s2">= </span><span class="s5">5500</span><span class="s2">;</span>
+
+    <span class="s0">double </span><span class="s1">CLOSE_PWR </span><span class="s2">= </span><span class="s5">0.56</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">MID_PWR   </span><span class="s2">= </span><span class="s5">0.58</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">FAR_PWR   </span><span class="s2">= </span><span class="s5">0.65</span><span class="s2">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">runOpMode</span><span class="s2">() {</span>
+
+        <span class="s4">// ===== Hardware Init =====</span>
+        <span class="s1">fl </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;frontLeftDrive&quot;</span><span class="s2">);</span>
+        <span class="s1">fr </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;frontRightDrive&quot;</span><span class="s2">);</span>
+        <span class="s1">bl </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;backLeftDrive&quot;</span><span class="s2">);</span>
+        <span class="s1">br </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;backRightDrive&quot;</span><span class="s2">);</span>
+
+        <span class="s1">launcher </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotorEx</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;launcherMotor&quot;</span><span class="s2">);</span>
+
+        <span class="s1">intake </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;intakeMotor&quot;</span><span class="s2">);</span>
+        <span class="s1">feeder </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;intakeMotor2&quot;</span><span class="s2">);</span>
+
+        <span class="s1">hoodL </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">Servo</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;hood&quot;</span><span class="s2">);</span>
+        <span class="s1">hoodR </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">Servo</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;gate&quot;</span><span class="s2">);</span>
+
+        <span class="s1">fl</span><span class="s2">.</span><span class="s1">setDirection</span><span class="s2">(</span><span class="s1">DcMotorSimple</span><span class="s2">.</span><span class="s1">Direction</span><span class="s2">.</span><span class="s1">REVERSE</span><span class="s2">);</span>
+        <span class="s1">bl</span><span class="s2">.</span><span class="s1">setDirection</span><span class="s2">(</span><span class="s1">DcMotorSimple</span><span class="s2">.</span><span class="s1">Direction</span><span class="s2">.</span><span class="s1">REVERSE</span><span class="s2">);</span>
+        <span class="s1">br</span><span class="s2">.</span><span class="s1">setDirection</span><span class="s2">(</span><span class="s1">DcMotorSimple</span><span class="s2">.</span><span class="s1">Direction</span><span class="s2">.</span><span class="s1">REVERSE</span><span class="s2">);</span>
+        <span class="s1">fr</span><span class="s2">.</span><span class="s1">setDirection</span><span class="s2">(</span><span class="s1">DcMotorSimple</span><span class="s2">.</span><span class="s1">Direction</span><span class="s2">.</span><span class="s1">REVERSE</span><span class="s2">);</span>
+        <span class="s4">// ===== Camera =====</span>
+        <span class="s1">aprilTag </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AprilTagProcessor</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">().</span><span class="s1">build</span><span class="s2">();</span>
+        <span class="s1">portal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">VisionPortal</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">setCamera</span><span class="s2">(</span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span>
+                        <span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">external</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">camera</span><span class="s2">.</span><span class="s1">WebcamName</span><span class="s2">.</span><span class="s0">class</span><span class="s2">,</span>
+                        <span class="s3">&quot;logicam&quot;</span><span class="s2">))</span>
+                <span class="s2">.</span><span class="s1">addProcessor</span><span class="s2">(</span><span class="s1">aprilTag</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">build</span><span class="s2">();</span>
+
+        <span class="s1">tagCache </span><span class="s2">= </span><span class="s0">new </span><span class="s1">TagDistanceCache</span><span class="s2">(</span><span class="s1">aprilTag</span><span class="s2">, </span><span class="s5">300</span><span class="s2">); </span><span class="s4">// trust last tag for 300ms</span>
+
+
+        <span class="s1">waitForStart</span><span class="s2">();</span>
+
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">()) {</span>
+
+
+
+            <span class="s4">// ===== Drive =====</span>
+            <span class="s0">double </span><span class="s1">y </span><span class="s2">= -</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">left_stick_y</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">x </span><span class="s2">= </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">left_stick_x</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">r </span><span class="s2">= </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">right_stick_x</span><span class="s2">;</span>
+
+            <span class="s0">double </span><span class="s1">flP </span><span class="s2">= </span><span class="s1">y </span><span class="s2">+ </span><span class="s1">x </span><span class="s2">+ </span><span class="s1">r</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">frP </span><span class="s2">= </span><span class="s1">y </span><span class="s2">- </span><span class="s1">x </span><span class="s2">- </span><span class="s1">r</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">blP </span><span class="s2">= </span><span class="s1">y </span><span class="s2">- </span><span class="s1">x </span><span class="s2">+ </span><span class="s1">r</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">brP </span><span class="s2">= </span><span class="s1">y </span><span class="s2">+ </span><span class="s1">x </span><span class="s2">- </span><span class="s1">r</span><span class="s2">;</span>
+
+            <span class="s0">double </span><span class="s1">max </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span>
+                    <span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">flP</span><span class="s2">), </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">frP</span><span class="s2">)),</span>
+                    <span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">blP</span><span class="s2">), </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">brP</span><span class="s2">))</span>
+            <span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">max </span><span class="s2">&gt; </span><span class="s5">1.0</span><span class="s2">) {</span>
+                <span class="s1">flP </span><span class="s2">/= </span><span class="s1">max</span><span class="s2">;</span>
+                <span class="s1">frP </span><span class="s2">/= </span><span class="s1">max</span><span class="s2">;</span>
+                <span class="s1">blP </span><span class="s2">/= </span><span class="s1">max</span><span class="s2">;</span>
+                <span class="s1">brP </span><span class="s2">/= </span><span class="s1">max</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s1">fl</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s1">flP</span><span class="s2">);</span>
+            <span class="s1">fr</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s1">frP</span><span class="s2">);</span>
+            <span class="s1">bl</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s1">blP</span><span class="s2">);</span>
+            <span class="s1">br</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s1">brP</span><span class="s2">);</span>
+
+            <span class="s4">// ===== Hood (UNCHANGED) =====</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">dpad_up</span><span class="s2">) </span><span class="s1">hoodPos </span><span class="s2">+= </span><span class="s5">0.01</span><span class="s2">;</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">dpad_down</span><span class="s2">) </span><span class="s1">hoodPos </span><span class="s2">-= </span><span class="s5">0.01</span><span class="s2">;</span>
+            <span class="s1">hoodPos </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">max</span><span class="s2">(</span><span class="s5">0</span><span class="s2">, </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">min</span><span class="s2">(</span><span class="s5">1</span><span class="s2">, </span><span class="s1">hoodPos</span><span class="s2">));</span>
+            <span class="s1">hoodL</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">hoodPos</span><span class="s2">);</span>
+            <span class="s1">hoodR</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">hoodPos</span><span class="s2">);</span>
+
+            <span class="s4">// ===== Distance from AprilTag =====</span>
+            <span class="s1">tagCache</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+            <span class="s1">distance </span><span class="s2">= </span><span class="s1">tagCache</span><span class="s2">.</span><span class="s1">getStableDistance</span><span class="s2">();</span>
+
+
+
+            <span class="s4">// ===== Smooth Shooter Power Calculation =====</span>
+            <span class="s4">// ===== Smooth Shooter Power Calculation =====</span>
+            <span class="s0">double </span><span class="s1">basePower</span><span class="s2">;</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&lt; </span><span class="s5">0</span><span class="s2">) {</span>
+                <span class="s4">// tag stale/not seen recently: HOLD last power instead of snapping</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">lastBasePower</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&gt; </span><span class="s5">8000</span><span class="s2">) {</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">FAR_PWR</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&lt; </span><span class="s1">CLOSE_DIST</span><span class="s2">) {</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">CLOSE_PWR</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&lt; </span><span class="s1">MID_DIST</span><span class="s2">) {</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s1">distance</span><span class="s2">, </span><span class="s1">CLOSE_DIST</span><span class="s2">, </span><span class="s1">CLOSE_PWR</span><span class="s2">, </span><span class="s1">MID_DIST</span><span class="s2">, </span><span class="s1">MID_PWR</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&lt; </span><span class="s1">FAR_DIST</span><span class="s2">) {</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s1">distance</span><span class="s2">, </span><span class="s1">MID_DIST</span><span class="s2">, </span><span class="s1">MID_PWR</span><span class="s2">, </span><span class="s1">FAR_DIST</span><span class="s2">, </span><span class="s1">FAR_PWR</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">basePower </span><span class="s2">= </span><span class="s1">FAR_PWR</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+<span class="s4">// update lastBasePower only when tag is valid</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">distance </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">lastBasePower </span><span class="s2">= </span><span class="s1">basePower</span><span class="s2">;</span>
+
+
+
+
+            <span class="s4">// ===== Shooter Control =====</span>
+            <span class="s0">double </span><span class="s1">rightTrigger </span><span class="s2">= </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">right_trigger</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">leftTrigger  </span><span class="s2">= </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">left_trigger</span><span class="s2">;</span>
+
+            <span class="s0">double </span><span class="s1">finalPower</span><span class="s2">;</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">left_bumper</span><span class="s2">) {</span>
+                <span class="s1">finalPower </span><span class="s2">= </span><span class="s5">1</span><span class="s2">;          </span><span class="s4">// override: full power</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">leftTrigger </span><span class="s2">&gt; </span><span class="s5">0.1</span><span class="s2">) {</span>
+                <span class="s1">finalPower </span><span class="s2">= -</span><span class="s5">0.2</span><span class="s2">;         </span><span class="s4">// brake/reverse</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">finalPower </span><span class="s2">= </span><span class="s1">rightTrigger </span><span class="s2">* </span><span class="s1">basePower</span><span class="s2">; </span><span class="s4">// normal shooting power</span>
+            <span class="s2">}</span>
+
+            <span class="s1">launcher</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s1">finalPower</span><span class="s2">);</span>
+
+
+            <span class="s4">// ===== Intake Control =====</span>
+            <span class="s4">// ===== Intake Control =====</span>
+
+<span class="s4">// X = AUTO FEED (pulse)</span>
+
+
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">x</span><span class="s2">) {</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">feedOn </span><span class="s2">&amp;&amp; </span><span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">seconds</span><span class="s2">() &gt;= </span><span class="s1">FEED_ON_TIME</span><span class="s2">) {</span>
+                    <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                    <span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">reset</span><span class="s2">();</span>
+                <span class="s2">}</span>
+                <span class="s0">else if </span><span class="s2">(!</span><span class="s1">feedOn </span><span class="s2">&amp;&amp; </span><span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">seconds</span><span class="s2">() &gt;= </span><span class="s1">FEED_OFF_TIME</span><span class="s2">) {</span>
+                    <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+                    <span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">reset</span><span class="s2">();</span>
+                <span class="s2">}</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">feedOn</span><span class="s2">) {</span>
+                    <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">1.0</span><span class="s2">);</span>
+                    <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">1.0</span><span class="s2">);</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0</span><span class="s2">);</span>
+                    <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+<span class="s4">// A = MANUAL FEED</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">a</span><span class="s2">) {</span>
+                <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">1.0</span><span class="s2">);</span>
+                <span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">reset</span><span class="s2">();</span>
+                <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">y</span><span class="s2">) {</span>
+                <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">1</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+<span class="s4">// B = REVERSE FEEDER</span>
+            <span class="s0">else if </span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">b</span><span class="s2">) {</span>
+                <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(-</span><span class="s5">.2</span><span class="s2">);</span>
+                <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(-</span><span class="s5">1.0</span><span class="s2">);</span>
+                <span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">reset</span><span class="s2">();</span>
+                <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+<span class="s4">// NOTHING PRESSED</span>
+            <span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0</span><span class="s2">);</span>
+                <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0</span><span class="s2">);</span>
+                <span class="s1">feedTimer</span><span class="s2">.</span><span class="s1">reset</span><span class="s2">();</span>
+                <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+
+
+            <span class="s4">// ===== Telemetry =====</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;Launcher Vel (ticks/s)&quot;</span><span class="s2">, </span><span class="s1">launcher</span><span class="s2">.</span><span class="s1">getVelocity</span><span class="s2">());</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;Distance&quot;</span><span class="s2">, </span><span class="s1">distance</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;Hood Pos&quot;</span><span class="s2">, </span><span class="s1">hoodPos</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;TagAge(ms)&quot;</span><span class="s2">, </span><span class="s1">tagCache</span><span class="s2">.</span><span class="s1">getAgeMs</span><span class="s2">());</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;TagDist(last)&quot;</span><span class="s2">, </span><span class="s1">tagCache</span><span class="s2">.</span><span class="s1">getLastGoodDistance</span><span class="s2">());</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+
+
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// ===== Linear Interpolation Function =====</span>
+    <span class="s0">double </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s0">double </span><span class="s1">x</span><span class="s2">, </span><span class="s0">double </span><span class="s1">x1</span><span class="s2">, </span><span class="s0">double </span><span class="s1">y1</span><span class="s2">, </span><span class="s0">double </span><span class="s1">x2</span><span class="s2">, </span><span class="s0">double </span><span class="s1">y2</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">y1 </span><span class="s2">+ (</span><span class="s1">x </span><span class="s2">- </span><span class="s1">x1</span><span class="s2">) * (</span><span class="s1">y2 </span><span class="s2">- </span><span class="s1">y1</span><span class="s2">) / (</span><span class="s1">x2 </span><span class="s2">- </span><span class="s1">x1</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s1">ElapsedTime feedTimer </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ElapsedTime</span><span class="s2">();</span>
+    <span class="s0">boolean </span><span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+
+    <span class="s0">static final double </span><span class="s1">FEED_ON_TIME </span><span class="s2">= </span><span class="s5">0.025</span><span class="s2">;   </span><span class="s4">// seconds</span>
+    <span class="s0">static final double </span><span class="s1">FEED_OFF_TIME </span><span class="s2">= </span><span class="s5">0.5</span><span class="s2">;  </span><span class="s4">// seconds</span>
+
+
+    <span class="s0">static final double </span><span class="s1">VELOCITY_TOLERANCE </span><span class="s2">= </span><span class="s5">75</span><span class="s2">; </span><span class="s4">// ticks/sec below target allowed</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

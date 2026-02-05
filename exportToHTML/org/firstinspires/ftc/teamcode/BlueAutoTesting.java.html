@@ -1,0 +1,326 @@
+<html>
+<head>
+<title>BlueAutoTesting.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BlueAutoTesting.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">teamcode</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">Autonomous</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">Disabled</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">LinearOpMode</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">DcMotor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">DcMotorEx</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">external</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">camera</span><span class="s2">.</span><span class="s1">WebcamName</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">VisionPortal</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">apriltag</span><span class="s2">.</span><span class="s1">AprilTagDetection</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">vision</span><span class="s2">.</span><span class="s1">apriltag</span><span class="s2">.</span><span class="s1">AprilTagProcessor</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">acmerobotics</span><span class="s2">.</span><span class="s1">dashboard</span><span class="s2">.</span><span class="s1">telemetry</span><span class="s2">.</span><span class="s1">TelemetryPacket</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">acmerobotics</span><span class="s2">.</span><span class="s1">roadrunner</span><span class="s2">.</span><span class="s1">Action</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">acmerobotics</span><span class="s2">.</span><span class="s1">roadrunner</span><span class="s2">.</span><span class="s1">Pose2d</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">acmerobotics</span><span class="s2">.</span><span class="s1">roadrunner</span><span class="s2">.</span><span class="s1">Vector2d</span><span class="s2">;</span>
+
+<span class="s1">@Disabled</span>
+
+<span class="s1">@Autonomous</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;BlueAutoTesting&quot;</span><span class="s2">, </span><span class="s1">group </span><span class="s2">= </span><span class="s3">&quot;Robot&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">BlueAutoTesting </span><span class="s0">extends </span><span class="s1">LinearOpMode </span><span class="s2">{</span>
+
+    <span class="s4">// =======================</span>
+    <span class="s4">// Shooter (Velocity)</span>
+    <span class="s4">// =======================</span>
+    <span class="s0">private static final double </span><span class="s1">TICKS_PER_REV </span><span class="s2">= </span><span class="s5">28.0</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">MAX_RPM </span><span class="s2">= </span><span class="s5">5200</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">RPM_TOLERANCE </span><span class="s2">= </span><span class="s5">200</span><span class="s2">;</span>
+
+    <span class="s0">private static final double </span><span class="s1">CLOSE_DIST </span><span class="s2">= </span><span class="s5">3000</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">MID_DIST   </span><span class="s2">= </span><span class="s5">3900</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">FAR_DIST   </span><span class="s2">= </span><span class="s5">5500</span><span class="s2">;</span>
+
+    <span class="s0">private static final double </span><span class="s1">CLOSE_PWR </span><span class="s2">= </span><span class="s5">0.33</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">MID_PWR   </span><span class="s2">= </span><span class="s5">0.43</span><span class="s2">;</span>
+    <span class="s0">private static final double </span><span class="s1">FAR_PWR   </span><span class="s2">= </span><span class="s5">0.53</span><span class="s2">;</span>
+
+    <span class="s0">private static final double </span><span class="s1">MAX_DIST_FORCE </span><span class="s2">= </span><span class="s5">8000</span><span class="s2">;</span>
+
+    <span class="s0">private static final long </span><span class="s1">SPINUP_TIMEOUT_MS </span><span class="s2">= </span><span class="s5">1200</span><span class="s2">;</span>
+    <span class="s0">private static final long </span><span class="s1">SHOOT_WINDOW_MS   </span><span class="s2">= </span><span class="s5">4000</span><span class="s2">;</span>
+    <span class="s0">private static final long </span><span class="s1">CLEAR_AFTER_MS    </span><span class="s2">= </span><span class="s5">250</span><span class="s2">;</span>
+
+    <span class="s0">private static final double </span><span class="s1">FEED_ON_TIME  </span><span class="s2">= </span><span class="s5">1</span><span class="s2">;  </span><span class="s4">// seconds</span>
+    <span class="s0">private static final double </span><span class="s1">FEED_OFF_TIME </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;  </span><span class="s4">// seconds</span>
+
+    <span class="s0">private double </span><span class="s1">lastBaseScalar </span><span class="s2">= </span><span class="s1">MID_PWR</span><span class="s2">;</span>
+
+    <span class="s4">// =======================</span>
+    <span class="s4">// Hardware</span>
+    <span class="s4">// =======================</span>
+    <span class="s0">private </span><span class="s1">DcMotorEx launcher</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">DcMotor intake</span><span class="s2">, </span><span class="s1">feeder</span><span class="s2">;</span>
+
+    <span class="s4">// =======================</span>
+    <span class="s4">// Vision</span>
+    <span class="s4">// =======================</span>
+    <span class="s0">private </span><span class="s1">VisionPortal portal</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">AprilTagProcessor aprilTag</span><span class="s2">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">runOpMode</span><span class="s2">() {</span>
+
+        <span class="s4">// ---- Motors ----</span>
+        <span class="s1">launcher </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotorEx</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;launcherMotor&quot;</span><span class="s2">);</span>
+        <span class="s1">launcher</span><span class="s2">.</span><span class="s1">setMode</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s1">RunMode</span><span class="s2">.</span><span class="s1">RUN_USING_ENCODER</span><span class="s2">);</span>
+
+        <span class="s1">intake </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;intakeMotor&quot;</span><span class="s2">);</span>
+        <span class="s1">feeder </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">DcMotor</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;intakeMotor2&quot;</span><span class="s2">);</span>
+
+        <span class="s4">// ---- Camera / AprilTag ----</span>
+        <span class="s1">aprilTag </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AprilTagProcessor</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">().</span><span class="s1">build</span><span class="s2">();</span>
+        <span class="s1">portal </span><span class="s2">= </span><span class="s0">new </span><span class="s1">VisionPortal</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">setCamera</span><span class="s2">(</span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">WebcamName</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s3">&quot;logicam&quot;</span><span class="s2">))</span>
+                <span class="s2">.</span><span class="s1">addProcessor</span><span class="s2">(</span><span class="s1">aprilTag</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">build</span><span class="s2">();</span>
+
+        <span class="s1">TagDistanceCache tagCache </span><span class="s2">= </span><span class="s0">new </span><span class="s1">TagDistanceCache</span><span class="s2">(</span><span class="s1">aprilTag</span><span class="s2">, </span><span class="s5">300</span><span class="s2">, </span><span class="s5">0.25</span><span class="s2">);</span>
+
+        <span class="s4">// ---- Road Runner Start ----</span>
+        <span class="s1">Pose2d startPose </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Pose2d</span><span class="s2">(</span><span class="s5">0</span><span class="s2">, </span><span class="s5">0</span><span class="s2">, </span><span class="s5">0</span><span class="s2">);</span>
+        <span class="s1">MecanumDrive drive </span><span class="s2">= </span><span class="s0">new </span><span class="s1">MecanumDrive</span><span class="s2">(</span><span class="s1">hardwareMap</span><span class="s2">, </span><span class="s1">startPose</span><span class="s2">);</span>
+
+        <span class="s4">// =======================</span>
+        <span class="s4">// BUILD YOUR AUTO PATH (EDIT NUMBERS HERE</span>
+        <span class="s1">Action auto </span><span class="s2">= </span><span class="s1">drive</span><span class="s2">.</span><span class="s1">actionBuilder</span><span class="s2">(</span><span class="s1">startPose</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">lineToX</span><span class="s2">(-</span><span class="s5">47</span><span class="s2">)                          </span><span class="s4">// back</span>
+                <span class="s4">//.turn(Math.toRadians(165))             // rotate</span>
+                <span class="s4">//.strafeTo(new Vector2d(-47, 30))       // strafe (Y coord)</span>
+                <span class="s4">//.turn(Math.toRadians(-165))            // rotate back</span>
+                <span class="s4">//.lineToX(-47 + 23)                     // forward (intake move)</span>
+                <span class="s4">//.lineToX(-47)                          // back again</span>
+                <span class="s2">.</span><span class="s1">build</span><span class="s2">();</span>
+
+        <span class="s1">Action move </span><span class="s2">= </span><span class="s1">drive</span><span class="s2">.</span><span class="s1">actionBuilder</span><span class="s2">(</span><span class="s1">startPose</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">turn</span><span class="s2">(</span><span class="s5">90</span><span class="s2">)</span>
+                                <span class="s2">.</span><span class="s1">build</span><span class="s2">();</span>
+
+
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addLine</span><span class="s2">(</span><span class="s3">&quot;READY&quot;</span><span class="s2">);</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+        <span class="s1">waitForStart</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isStopRequested</span><span class="s2">()) {</span>
+            <span class="s1">safeStopAll</span><span class="s2">();</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">portal </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">portal</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+            <span class="s0">return</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// OPTIONAL: shoot before driving</span>
+
+
+        <span class="s4">// ---- RUN ACTION (YOUR RR VERSION NEEDS PACKET) ----</span>
+        <span class="s1">runActionBlocking</span><span class="s2">(</span><span class="s1">drive</span><span class="s2">, </span><span class="s1">auto</span><span class="s2">);</span>
+
+        <span class="s4">// OPTIONAL: shoot after driving</span>
+        <span class="s1">shootUsingVisionDistance</span><span class="s2">(</span><span class="s1">tagCache</span><span class="s2">);</span>
+
+        <span class="s1">runActionBlocking</span><span class="s2">(</span><span class="s1">drive</span><span class="s2">, </span><span class="s1">move</span><span class="s2">);</span>
+        <span class="s1">safeStopAll</span><span class="s2">();</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">portal </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">portal</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addLine</span><span class="s2">(</span><span class="s3">&quot;AUTO DONE&quot;</span><span class="s2">);</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+        <span class="s1">sleep</span><span class="s2">(</span><span class="s5">250</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// =========================</span>
+    <span class="s4">// Action runner (packet-based)</span>
+    <span class="s4">// =========================</span>
+    <span class="s0">private void </span><span class="s1">runActionBlocking</span><span class="s2">(</span><span class="s1">MecanumDrive drive</span><span class="s2">, </span><span class="s1">Action action</span><span class="s2">) {</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">()) {</span>
+            <span class="s1">TelemetryPacket packet </span><span class="s2">= </span><span class="s0">new </span><span class="s1">TelemetryPacket</span><span class="s2">();</span>
+            <span class="s0">boolean </span><span class="s1">running </span><span class="s2">= </span><span class="s1">action</span><span class="s2">.</span><span class="s1">run</span><span class="s2">(</span><span class="s1">packet</span><span class="s2">);</span>
+            <span class="s1">drive</span><span class="s2">.</span><span class="s1">updatePoseEstimate</span><span class="s2">();</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">running</span><span class="s2">) </span><span class="s0">break</span><span class="s2">;</span>
+            <span class="s1">idle</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// =========================</span>
+    <span class="s4">// Intake helpers</span>
+    <span class="s4">// =========================</span>
+    <span class="s0">private void </span><span class="s1">startIntake</span><span class="s2">() {</span>
+        <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">1.0</span><span class="s2">);</span>
+        <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">stopIntake</span><span class="s2">() {</span>
+        <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.0</span><span class="s2">);</span>
+        <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// =========================</span>
+    <span class="s4">// SHOOT ROUTINE</span>
+    <span class="s4">// =========================</span>
+    <span class="s0">private void </span><span class="s1">shootUsingVisionDistance</span><span class="s2">(</span><span class="s1">TagDistanceCache tagCache</span><span class="s2">) {</span>
+
+        <span class="s4">// Stabilize distance reads</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s5">10</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s1">tagCache</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+            <span class="s1">sleep</span><span class="s2">(</span><span class="s5">20</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s0">double </span><span class="s1">d </span><span class="s2">= </span><span class="s1">tagCache</span><span class="s2">.</span><span class="s1">getStableDistance</span><span class="s2">(); </span><span class="s4">// -1 if stale/unavailable</span>
+        <span class="s0">double </span><span class="s1">baseScalar </span><span class="s2">= </span><span class="s1">computeBaseScalar</span><span class="s2">(</span><span class="s1">d</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">d </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">lastBaseScalar </span><span class="s2">= </span><span class="s1">baseScalar</span><span class="s2">;</span>
+
+        <span class="s0">double </span><span class="s1">targetRPM </span><span class="s2">= </span><span class="s1">baseScalar </span><span class="s2">* </span><span class="s1">MAX_RPM</span><span class="s2">;</span>
+
+        <span class="s1">launcher</span><span class="s2">.</span><span class="s1">setVelocity</span><span class="s2">(</span><span class="s1">targetRPM </span><span class="s2">* </span><span class="s1">TICKS_PER_REV </span><span class="s2">/ </span><span class="s5">60.0</span><span class="s2">);</span>
+
+        <span class="s4">// Spinup time (simple)</span>
+        <span class="s0">long </span><span class="s1">start </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">() &amp;&amp; </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() - </span><span class="s1">start </span><span class="s2">&lt; </span><span class="s1">SPINUP_TIMEOUT_MS</span><span class="s2">) {</span>
+            <span class="s0">double </span><span class="s1">currentRPM </span><span class="s2">= </span><span class="s1">launcher</span><span class="s2">.</span><span class="s1">getVelocity</span><span class="s2">() * </span><span class="s5">60.0 </span><span class="s2">/ </span><span class="s1">TICKS_PER_REV</span><span class="s2">;</span>
+            <span class="s0">boolean </span><span class="s1">atSpeed </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">currentRPM </span><span class="s2">- </span><span class="s1">targetRPM</span><span class="s2">) &lt;= </span><span class="s1">RPM_TOLERANCE</span><span class="s2">;</span>
+
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;RPM&quot;</span><span class="s2">, </span><span class="s1">currentRPM</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;Target&quot;</span><span class="s2">, </span><span class="s1">targetRPM</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;AtSpeed&quot;</span><span class="s2">, </span><span class="s1">atSpeed</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s3">&quot;Distance&quot;</span><span class="s2">, </span><span class="s1">d</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">atSpeed</span><span class="s2">) </span><span class="s0">break</span><span class="s2">;</span>
+            <span class="s1">idle</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Feed window</span>
+        <span class="s0">long </span><span class="s1">feedStart </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+        <span class="s0">boolean </span><span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+        <span class="s0">long </span><span class="s1">pulseStart </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">() &amp;&amp; </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() - </span><span class="s1">feedStart </span><span class="s2">&lt; </span><span class="s1">SHOOT_WINDOW_MS</span><span class="s2">) {</span>
+            <span class="s0">double </span><span class="s1">currentRPM </span><span class="s2">= </span><span class="s1">launcher</span><span class="s2">.</span><span class="s1">getVelocity</span><span class="s2">() * </span><span class="s5">60.0 </span><span class="s2">/ </span><span class="s1">TICKS_PER_REV</span><span class="s2">;</span>
+            <span class="s0">boolean </span><span class="s1">atSpeed </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">(</span><span class="s1">currentRPM </span><span class="s2">- </span><span class="s1">targetRPM</span><span class="s2">) &lt;= </span><span class="s1">RPM_TOLERANCE</span><span class="s2">;</span>
+
+            <span class="s0">double </span><span class="s1">pulseSec </span><span class="s2">= (</span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() - </span><span class="s1">pulseStart</span><span class="s2">) / </span><span class="s5">1000.0</span><span class="s2">;</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">feedOn </span><span class="s2">&amp;&amp; </span><span class="s1">pulseSec </span><span class="s2">&gt;= </span><span class="s1">FEED_ON_TIME</span><span class="s2">) {</span>
+                <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                <span class="s1">pulseStart </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(!</span><span class="s1">feedOn </span><span class="s2">&amp;&amp; </span><span class="s1">pulseSec </span><span class="s2">&gt;= </span><span class="s1">FEED_OFF_TIME</span><span class="s2">) {</span>
+                <span class="s1">feedOn </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+                <span class="s1">pulseStart </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">feedOn </span><span class="s2">&amp;&amp; </span><span class="s1">atSpeed</span><span class="s2">) {</span>
+                <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.4</span><span class="s2">);</span>
+                <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.4</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.0</span><span class="s2">);</span>
+                <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.0</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+            <span class="s1">idle</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Extra clear</span>
+        <span class="s0">long </span><span class="s1">clearStart </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">() &amp;&amp; </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() - </span><span class="s1">clearStart </span><span class="s2">&lt; </span><span class="s1">CLEAR_AFTER_MS</span><span class="s2">) {</span>
+            <span class="s1">intake</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.4</span><span class="s2">);</span>
+            <span class="s1">feeder</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0.4</span><span class="s2">);</span>
+            <span class="s1">idle</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+        <span class="s1">stopIntake</span><span class="s2">();</span>
+        <span class="s1">launcher</span><span class="s2">.</span><span class="s1">setVelocity</span><span class="s2">(</span><span class="s5">0</span><span class="s2">);</span>
+        <span class="s1">sleep</span><span class="s2">(</span><span class="s5">150</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private double </span><span class="s1">computeBaseScalar</span><span class="s2">(</span><span class="s0">double </span><span class="s1">d</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">d </span><span class="s2">&lt; </span><span class="s5">0 </span><span class="s2">|| </span><span class="s1">d </span><span class="s2">&gt; </span><span class="s1">MAX_DIST_FORCE</span><span class="s2">) </span><span class="s0">return </span><span class="s1">lastBaseScalar</span><span class="s2">;</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">d </span><span class="s2">&lt; </span><span class="s1">CLOSE_DIST</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">CLOSE_PWR</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">d </span><span class="s2">&lt; </span><span class="s1">MID_DIST</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s1">d</span><span class="s2">, </span><span class="s1">CLOSE_DIST</span><span class="s2">, </span><span class="s1">CLOSE_PWR</span><span class="s2">, </span><span class="s1">MID_DIST</span><span class="s2">, </span><span class="s1">MID_PWR</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">d </span><span class="s2">&lt; </span><span class="s1">FAR_DIST</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s1">d</span><span class="s2">, </span><span class="s1">MID_DIST</span><span class="s2">, </span><span class="s1">MID_PWR</span><span class="s2">, </span><span class="s1">FAR_DIST</span><span class="s2">, </span><span class="s1">FAR_PWR</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s0">return </span><span class="s1">FAR_PWR</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private double </span><span class="s1">interpolate</span><span class="s2">(</span><span class="s0">double </span><span class="s1">x</span><span class="s2">, </span><span class="s0">double </span><span class="s1">x1</span><span class="s2">, </span><span class="s0">double </span><span class="s1">y1</span><span class="s2">, </span><span class="s0">double </span><span class="s1">x2</span><span class="s2">, </span><span class="s0">double </span><span class="s1">y2</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">y1 </span><span class="s2">+ (</span><span class="s1">x </span><span class="s2">- </span><span class="s1">x1</span><span class="s2">) * (</span><span class="s1">y2 </span><span class="s2">- </span><span class="s1">y1</span><span class="s2">) / (</span><span class="s1">x2 </span><span class="s2">- </span><span class="s1">x1</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">safeStopAll</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{ </span><span class="s1">launcher</span><span class="s2">.</span><span class="s1">setVelocity</span><span class="s2">(</span><span class="s5">0</span><span class="s2">); } </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception ignored</span><span class="s2">) {}</span>
+        <span class="s0">try </span><span class="s2">{ </span><span class="s1">launcher</span><span class="s2">.</span><span class="s1">setPower</span><span class="s2">(</span><span class="s5">0</span><span class="s2">); } </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception ignored</span><span class="s2">) {}</span>
+        <span class="s1">stopIntake</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// =========================</span>
+    <span class="s4">// Stable distance cache</span>
+    <span class="s4">// =========================</span>
+    <span class="s0">static class </span><span class="s1">TagDistanceCache </span><span class="s2">{</span>
+        <span class="s0">private final </span><span class="s1">AprilTagProcessor proc</span><span class="s2">;</span>
+        <span class="s0">private final long </span><span class="s1">maxAgeMs</span><span class="s2">;</span>
+        <span class="s0">private final double </span><span class="s1">alpha</span><span class="s2">;</span>
+
+        <span class="s0">private double </span><span class="s1">filtered </span><span class="s2">= -</span><span class="s5">1</span><span class="s2">;</span>
+        <span class="s0">private long </span><span class="s1">lastGoodMs </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;</span>
+
+        <span class="s1">TagDistanceCache</span><span class="s2">(</span><span class="s1">AprilTagProcessor proc</span><span class="s2">, </span><span class="s0">long </span><span class="s1">maxAgeMs</span><span class="s2">, </span><span class="s0">double </span><span class="s1">alpha</span><span class="s2">) {</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">proc </span><span class="s2">= </span><span class="s1">proc</span><span class="s2">;</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">maxAgeMs </span><span class="s2">= </span><span class="s1">maxAgeMs</span><span class="s2">;</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">alpha </span><span class="s2">= </span><span class="s1">alpha</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">void </span><span class="s1">update</span><span class="s2">() {</span>
+            <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">AprilTagDetection</span><span class="s2">&gt; </span><span class="s1">detections </span><span class="s2">= </span><span class="s1">proc</span><span class="s2">.</span><span class="s1">getDetections</span><span class="s2">();</span>
+            <span class="s0">double </span><span class="s1">bestRange </span><span class="s2">= </span><span class="s5">1e9</span><span class="s2">;</span>
+
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">AprilTagDetection d </span><span class="s2">: </span><span class="s1">detections</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">d</span><span class="s2">.</span><span class="s1">ftcPose </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) </span><span class="s0">continue</span><span class="s2">;</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">d</span><span class="s2">.</span><span class="s1">ftcPose</span><span class="s2">.</span><span class="s1">range </span><span class="s2">&lt; </span><span class="s1">bestRange</span><span class="s2">) </span><span class="s1">bestRange </span><span class="s2">= </span><span class="s1">d</span><span class="s2">.</span><span class="s1">ftcPose</span><span class="s2">.</span><span class="s1">range</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">bestRange </span><span class="s2">&lt; </span><span class="s5">1e9</span><span class="s2">) {</span>
+                <span class="s0">double </span><span class="s1">raw </span><span class="s2">= </span><span class="s1">bestRange </span><span class="s2">* </span><span class="s5">100.0</span><span class="s2">; </span><span class="s4">// your scaling</span>
+                <span class="s0">long </span><span class="s1">now </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">filtered </span><span class="s2">&lt; </span><span class="s5">0</span><span class="s2">) </span><span class="s1">filtered </span><span class="s2">= </span><span class="s1">raw</span><span class="s2">;</span>
+                <span class="s0">else </span><span class="s1">filtered </span><span class="s2">= </span><span class="s1">filtered </span><span class="s2">+ </span><span class="s1">alpha </span><span class="s2">* (</span><span class="s1">raw </span><span class="s2">- </span><span class="s1">filtered</span><span class="s2">);</span>
+
+                <span class="s1">lastGoodMs </span><span class="s2">= </span><span class="s1">now</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">double </span><span class="s1">getStableDistance</span><span class="s2">() {</span>
+            <span class="s0">long </span><span class="s1">now </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">();</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">filtered </span><span class="s2">&lt; </span><span class="s5">0</span><span class="s2">) </span><span class="s0">return </span><span class="s2">-</span><span class="s5">1</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">now </span><span class="s2">- </span><span class="s1">lastGoodMs </span><span class="s2">&gt; </span><span class="s1">maxAgeMs</span><span class="s2">) </span><span class="s0">return </span><span class="s2">-</span><span class="s5">1</span><span class="s2">;</span>
+            <span class="s0">return </span><span class="s1">filtered</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
