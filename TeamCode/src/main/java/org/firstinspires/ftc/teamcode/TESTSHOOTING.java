@@ -62,7 +62,7 @@ public class TESTSHOOTING extends LinearOpMode {
 
     // Left bumper mode: fixed power + fixed RPM threshold
     static final double LB_POWER = 0.80;           // requested .8
-    static final double LB_READY_RPM = 3000;       // requested 4000 rpm
+    static final double LB_READY_RPM = 3500;       // requested 4000 rpm
 
     // =====================
     // Distance thresholds (your current ones)
