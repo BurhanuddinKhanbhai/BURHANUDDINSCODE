@@ -36,11 +36,11 @@ public class TESTSHOOTING extends LinearOpMode {
     // Hood
     // =====================
     Servo hoodL, hoodR;
-    double hoodPos = 0.65; // manual/normal hood position (dpad)
-    double hoodPosBeforeHold = 0.65;
+    double hoodPos = 0.5; // manual/normal hood position (dpad)
+    double hoodPosBeforeHold = 0.5;
 
     // Tune these
-    static final double HOOD_SHOOT_POS = 0.78;   // where hood goes while holding X or LB
+    static final double HOOD_SHOOT_POS = 0.3;   // where hood goes while holding X or LB
     static final double HOOD_STEP      = 0.01;
 
     // =====================
@@ -62,7 +62,7 @@ public class TESTSHOOTING extends LinearOpMode {
 
     // Left bumper mode: fixed power + fixed RPM threshold
     static final double LB_POWER = 0.80;           // requested .8
-    static final double LB_READY_RPM = 3000;       // requested 4000 rpm
+    static final double LB_READY_RPM = 3400;       // requested 4000 rpm
 
     // =====================
     // Distance thresholds (your current ones)

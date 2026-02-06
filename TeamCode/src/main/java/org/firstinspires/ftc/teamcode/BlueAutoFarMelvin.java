@@ -34,7 +34,7 @@ public class BlueAutoFarMelvin extends LinearOpMode {
     private static final double FAR_FIXED_TARGET_RPM = FAR_FIXED_POWER * MAX_RPM;
 
     // You asked: wait until it hits 4000 RPM before feeding
-    private static final double READY_RPM = 3100;
+    private static final double READY_RPM = 3400;
 
     // Timeout so it doesn't hang forever
     private static final long SPINUP_TIMEOUT_MS = 4000;
@@ -51,8 +51,8 @@ public class BlueAutoFarMelvin extends LinearOpMode {
     // =========================
     // Hood (from your TeleOp)
     // =========================
-    private static final double HOOD_SHOOT_POS = 0.78; // TeleOp HOOD_SHOOT_POS
-    private static final double HOOD_DEFAULT_POS = 0.65;
+    private static final double HOOD_SHOOT_POS = 0.30; // TeleOp HOOD_SHOOT_POS
+    private static final double HOOD_DEFAULT_POS = 0.5;
 
     // =======================
     // Hardware
@@ -108,28 +108,28 @@ public class BlueAutoFarMelvin extends LinearOpMode {
                 .build();
 
         Action IntakeFirstRow = drive.actionBuilder(new Pose2d(10,10,Math.toRadians(90)))
-                .strafeTo(new Vector2d(44,10))
-                .strafeTo(new Vector2d(44, 50))
+                .strafeTo(new Vector2d(40,10))
+                .strafeTo(new Vector2d(40, 58))
                 .build();
 
-        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(44, 50, Math.toRadians(12)))
-                .strafeTo(new Vector2d(10, 10))
+        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(40, 58, Math.toRadians(12)))
+                .strafeTo(new Vector2d(15, 25))
                 .build();
 
-        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(10,10,Math.toRadians(165)))
-                .strafeTo(new Vector2d(30,50))
+        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(15,25,Math.toRadians(165)))
+                .strafeTo(new Vector2d(30,55))
                 .build();
 
-        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(30, 50, Math.toRadians(165)))
+        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(30, 55, Math.toRadians(165)))
                 .strafeTo(new Vector2d(10,50))
                 .build();
 
         Action clear = drive.actionBuilder(new Pose2d(10,50,Math.toRadians (165)))
-                .strafeTo(new Vector2d(44,50))
+                .strafeTo(new Vector2d(40,50))
                 .build();
 
         Action ShootFinal = drive.actionBuilder(new Pose2d(44,50, Math.toRadians(12)))
-                .strafeTo(new Vector2d(10,10))
+                .strafeTo(new Vector2d(0,15))
                 .build();
         // ==========================================================
         // ===================== FULL AUTO ==========================
