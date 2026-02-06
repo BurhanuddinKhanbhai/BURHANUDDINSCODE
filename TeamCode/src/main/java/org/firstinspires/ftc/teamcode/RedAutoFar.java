@@ -115,15 +115,15 @@ public class RedAutoFar extends LinearOpMode {
         // Blue: startPose (0,0, 90), strafeTo(44,0) then (44, 70)
         // Red : startPose (0,0,-90), strafeTo(44,0) then (44,-70)
         Action IntakeFirstRow = drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(25, 0))
-                .strafeTo(new Vector2d(25, -25))
+                .lineToX(25)
+                .lineToY(-25)
                 .build();
 
         // Blue: from (44,70, 12) -> (10,10)
         // Red : from (44,-70,-12) -> (10,-10)
         Action MoveBackToShoot = drive.actionBuilder(new Pose2d(25, -25, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(0, 0))
-                .strafeTo(new Vector2d(0, 0))
+                .lineToX(0)
+                .lineToY(0)
                 .turnTo(Math.toRadians(-12))
 
                 .build();
