@@ -297,7 +297,7 @@ public class TESTSHOOTING extends LinearOpMode {
             }
             else if (gamepad2.a) {
                 intake.setPower(1.0);
-                feeder.setPower(0.0);
+                feeder.setPower(-.2);
             }
             else if (gamepad2.y) {
                 intake.setPower(0.75);

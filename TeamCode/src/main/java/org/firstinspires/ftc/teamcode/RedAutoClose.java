@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -24,11 +25,12 @@ import java.util.List;
 public class RedAutoClose extends LinearOpMode {
 
     // =========================
-    // Shooter tuning (FROM BLUE - working)
+    // Shooter tuning
     // =========================
     private static final double TICKS_PER_REV = 28.0;
     private static final double MAX_RPM = 5200;
 
+    // Distance -> power scalars (keep these matching whatever you want)
     private static final double CLOSE_DIST = 3000;
     private static final double MID_DIST   = 3900;
     private static final double FAR_DIST   = 5500;
@@ -36,23 +38,27 @@ public class RedAutoClose extends LinearOpMode {
     private static final double CLOSE_PWR = 0.35;
     private static final double MID_PWR   = 0.45;
     private static final double FAR_PWR   = 0.54;
+    private static final double HOOD_SHOOT_POS = 0.43; // TeleOp HOOD_SHOOT_POS
+    private static final double HOOD_DEFAULT_POS = 0.5;
 
     private static final double MAX_DIST_FORCE = 8000;
 
     // =========================
-    // Velocity-based "stable latch" settings (FROM BLUE - working)
+    // New velocity-based "stable latch" settings (overshoot-safe)
     // =========================
-    private static final long READY_TIMEOUT_MS    = 2500;
-    private static final long READY_STABLE_MS     = 120;
-    private static final double READY_CUSHION_RPM = 200;
+    private static final long READY_TIMEOUT_MS   = 2500; // wait up to this long to become "ready"
+    private static final long READY_STABLE_MS    = 120;  // must be ready continuously for this long
+    private static final double READY_CUSHION_RPM = 200; // treat >= target - cushion as ready (overshoot OK)
 
-    private static final long SHOOT_WINDOW_MS = 1800;
+    // Feed window controls "how many balls"
+    private static final long SHOOT_WINDOW_MS = 1800; // start here; raise/lower to get exactly 3
     private static final long CLEAR_AFTER_MS  = 200;
 
     private static final double FEED_PWR = 1.0;
 
+    // Keep the flywheel running between shots (prevents weird spinup behavior)
     private static final boolean KEEP_FLYWHEEL_SPINNING = true;
-    private static final double IDLE_SPIN_SCALAR = 0.20;
+    private static final double IDLE_SPIN_SCALAR = 0.20; // when "idle", hold a small rpm so it doesn't fully stop
 
     private double lastBaseScalar = MID_PWR;
 
@@ -61,6 +67,7 @@ public class RedAutoClose extends LinearOpMode {
     // =======================
     private DcMotorEx launcher;
     private DcMotor intake, feeder;
+    private Servo hoodL, hoodR;
 
     // =======================
     // Vision
@@ -77,6 +84,10 @@ public class RedAutoClose extends LinearOpMode {
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
         feeder = hardwareMap.get(DcMotor.class, "intakeMotor2");
 
+        hoodL = hardwareMap.get(Servo.class, "hood");
+        hoodR = hardwareMap.get(Servo.class, "gate");
+        hoodL.setPosition(HOOD_DEFAULT_POS);
+        hoodR.setPosition(HOOD_DEFAULT_POS);
         // --------- Vision (AprilTag) ----------
         aprilTag = new AprilTagProcessor.Builder().build();
         portal = new VisionPortal.Builder()
@@ -93,58 +104,55 @@ public class RedAutoClose extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         // ==========================================================
-        // ============ MOVEMENT (MIRRORED FROM BLUE TO RED) =========
-        // Mirror rule used:
-        //   Red = flip Y and flip heading/turn sign
+        // ===================== MOVEMENT (DO NOT TOUCH) ============
         // ==========================================================
 
         Action begining = drive.actionBuilder(startPose)
                 .build();
 
-        // BLUE: start heading +47, strafeTo(-44, -35)
-        // RED:  start heading -47, strafeTo(-44, +35)
-        Action movementFirstShot = drive.actionBuilder(new Pose2d(0, 0, Math.toRadians(-47)))
+        Action movementFirstShot = drive.actionBuilder(new Pose2d(0,0,Math.toRadians(-47)))
+                // ===== MOVEMENT COMMANDS GO HERE =====
+                // Example:
+                //.turn(Math.toRadians(30))
                 .strafeTo(new Vector2d(-44, 35))
+
+                // .lineToX(24)
+                // .turn(Math.toRadians(90))
+                // .strafeTo(new Vector2d(24, 24))
+                // =====================================
                 .build();
 
-        // BLUE: from (-44,-40, +47) turn(+47)
-        // RED:  from (-44,+40, -47) turn(-47)
-        Action movementTurnFirstRow = drive.actionBuilder(new Pose2d(-44, 40, Math.toRadians(-47)))
+
+        Action movementTurnFirstRow = drive.actionBuilder(new Pose2d(-44,35,Math.toRadians(-47)))
                 .turn(Math.toRadians(-47))
                 .build();
 
-        // BLUE: from (-44,-40, +90) strafeTo(-55, +10)
-        // RED:  from (-44,+40, -90) strafeTo(-55, -10)
-        Action IntakeFirstRow = drive.actionBuilder(new Pose2d(-44, 40, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(-55, -10))
+        Action IntakeFirstRow = drive.actionBuilder(new Pose2d(-44, 35, Math.toRadians(-90))) // matches where you actually are
+                .strafeTo(new Vector2d(-50, -10)) // move LEFT (forward while facing left)
                 .build();
 
-        // BLUE: from (-55,+10, +47) strafeTo(-44,-40)
-        // RED:  from (-55,-10, -47) strafeTo(-44,+40)
-        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(-55, -10, Math.toRadians(-47)))
-                .strafeTo(new Vector2d(-44, 40))
+        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(-50,-10,Math.toRadians(-47)))
+                .strafeTo(new Vector2d(-44,40))
+                //.turn(Math.toRadians(-30))
                 .build();
 
-        // BLUE: from (-44,-40, +90) strafeTo(-83,-40)
-        // RED:  from (-44,+40, -90) strafeTo(-83,+40)
         Action MoveToSecondRow = drive.actionBuilder(new Pose2d(-44, 40, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(-83, 40))
+                //.turn(Math.toRadians(35))
+                .strafeTo(new Vector2d(-84, 40))
                 .build();
 
-        // BLUE: from (-83,-40, +90) strafeTo(-83,+12)
-        // RED:  from (-83,+40, -90) strafeTo(-83,-12)
-        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(-83, 40, Math.toRadians(-90)))
-                .strafeTo(new Vector2d(-83, -12))
+        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(-84, 40, Math.toRadians(-90)))
+                .strafeTo(new Vector2d(-90,-12))
                 .build();
 
-        // BLUE: from (-83,+12, +45) strafeTo(-45,-45)
-        // RED:  from (-83,-12, -45) strafeTo(-45,+45)
-        Action ShootFinal = drive.actionBuilder(new Pose2d(-83, -12, Math.toRadians(-45)))
-                .strafeTo(new Vector2d(-45, 45))
+        Action ShootFinal = drive.actionBuilder(new Pose2d(-83,-12, Math.toRadians(-45)))
+                .strafeTo(new Vector2d(-45,40))
+                //.turn(Math.toRadians(-30))
                 .build();
+
 
         // ==========================================================
-        // ===================== FULL AUTO ==========================
+        // ===================== FULL AUTO (MOVEMENT UNCHANGED) =====
         // ==========================================================
 
         Action fullAuto = new SequentialAction(
@@ -162,7 +170,7 @@ public class RedAutoClose extends LinearOpMode {
                 shootUsingVisionAction(tagCache),
 
                 MoveToSecondRow,
-                startIntakeAction(1.0),
+                startIntakeAction(1),
                 IntakeSecondRow,
                 startIntakeAction(0),
 
@@ -172,7 +180,7 @@ public class RedAutoClose extends LinearOpMode {
                 safeStopAllAction()
         );
 
-        telemetry.addLine("Ready: RedAutoClose (mirrored from BlueAutoClose)");
+        telemetry.addLine("Ready: BlueAutoClose");
         telemetry.update();
 
         waitForStart();
@@ -190,15 +198,17 @@ public class RedAutoClose extends LinearOpMode {
     // ===================== ACTION HELPERS ======================
     // ==========================================================
 
+    /** Start intake/feeder as an Action (finishes immediately). */
     private Action startIntakeAction(double power) {
         return p -> {
             intake.setPower(power);
             // IMPORTANT: If you need feeder during intake, change this to feeder.setPower(power);
-            feeder.setPower(0.0);
+            feeder.setPower(-.2);
             return false;
         };
     }
 
+    /** Wrap shooter routine into an Action (runs once). */
     private Action shootUsingVisionAction(TagDistanceCache tagCache) {
         return new Action() {
             boolean done = false;
@@ -213,6 +223,7 @@ public class RedAutoClose extends LinearOpMode {
         };
     }
 
+    /** Safety stop as an Action (finishes immediately). */
     private Action safeStopAllAction() {
         return p -> {
             safeStopAll();
@@ -229,13 +240,23 @@ public class RedAutoClose extends LinearOpMode {
         feeder.setPower(0.0);
     }
 
+    /**
+     * Velocity-based, overshoot-safe, "stable latch" readiness:
+     *  - latch distance once
+     *  - set shooter velocity to target
+     *  - READY when RPM >= (target - cushion) continuously for READY_STABLE_MS
+     *  - feed for SHOOT_WINDOW_MS without further RPM checking
+     *  - optionally keep flywheel spinning after shot (recommended)
+     */
     private void shootUsingVisionDistance(TagDistanceCache tagCache) {
 
+        // Stabilize distance reads a bit
         for (int i = 0; i < 10; i++) {
             tagCache.update();
             sleep(20);
         }
 
+        // Latch distance once
         double d = tagCache.getStableDistance();
 
         double baseScalar = computeBaseScalar(d);
@@ -243,14 +264,19 @@ public class RedAutoClose extends LinearOpMode {
 
         double targetRPM = baseScalar * MAX_RPM;
 
+        hoodL.setPosition(HOOD_SHOOT_POS);
+        hoodR.setPosition(HOOD_SHOOT_POS);
+
         telemetry.addData("Step", "SHOOT (velocity stable latch)");
         telemetry.addData("StableDistance", d);
         telemetry.addData("BaseScalar", baseScalar);
         telemetry.addData("TargetRPM", targetRPM);
         telemetry.update();
 
+        // Command shooter velocity
         launcher.setVelocity(targetRPM * TICKS_PER_REV / 60.0);
 
+        // ---- Stable latch loop (overshoot OK) ----
         ElapsedTime timeout = new ElapsedTime();
         timeout.reset();
 
@@ -261,6 +287,7 @@ public class RedAutoClose extends LinearOpMode {
 
         while (opModeIsActive() && timeout.milliseconds() < READY_TIMEOUT_MS) {
             double currentRPM = launcher.getVelocity() * 60.0 / TICKS_PER_REV;
+
             boolean readyNow = currentRPM >= (targetRPM - READY_CUSHION_RPM);
 
             if (readyNow) {
@@ -283,11 +310,13 @@ public class RedAutoClose extends LinearOpMode {
             idle();
         }
 
+        // If it never latched, still try a "best effort" dump (prevents doing nothing)
         if (!latchedReady) {
             telemetry.addLine("READY TIMEOUT -> best effort feed");
             telemetry.update();
         }
 
+        // ---- Feed window (no more RPM checks) ----
         ElapsedTime shootTimer = new ElapsedTime();
         shootTimer.reset();
 
@@ -297,6 +326,7 @@ public class RedAutoClose extends LinearOpMode {
             idle();
         }
 
+        // Clear
         ElapsedTime clearTimer = new ElapsedTime();
         clearTimer.reset();
         while (opModeIsActive() && clearTimer.milliseconds() < CLEAR_AFTER_MS) {
@@ -307,6 +337,7 @@ public class RedAutoClose extends LinearOpMode {
 
         stopIntake();
 
+        // Keep flywheel spinning so next shot doesn't behave weird
         if (KEEP_FLYWHEEL_SPINNING) {
             double idleRPM = IDLE_SPIN_SCALAR * MAX_RPM;
             launcher.setVelocity(idleRPM * TICKS_PER_REV / 60.0);
@@ -368,7 +399,7 @@ public class RedAutoClose extends LinearOpMode {
             }
 
             if (bestRange < 1e9) {
-                double raw = bestRange * 100.0;
+                double raw = bestRange * 100.0; // meters -> "cm-ish"
                 long now = System.currentTimeMillis();
 
                 if (filtered < 0) filtered = raw;

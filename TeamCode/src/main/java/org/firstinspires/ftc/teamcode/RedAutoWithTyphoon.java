@@ -21,8 +21,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@Autonomous(name = "BlueAutoFarMelvin", group = "RoadRunner")
-public class BlueAutoFarMelvin extends LinearOpMode {
+@Autonomous(name = "RedAutoWithTyphoon", group = "RoadRunner")
+public class RedAutoWithTyphoon extends LinearOpMode {
     // =========================
     // =========================
     // =========================
@@ -51,7 +51,7 @@ public class BlueAutoFarMelvin extends LinearOpMode {
     // =========================
     // Hood (from your TeleOp)
     // =========================
-    private static final double HOOD_SHOOT_POS = 0.23; // TeleOp HOOD_SHOOT_POS
+    private static final double HOOD_SHOOT_POS = 0.20; // TeleOp HOOD_SHOOT_POS
     private static final double HOOD_DEFAULT_POS = 0.5;
 
     // =======================
@@ -102,39 +102,66 @@ public class BlueAutoFarMelvin extends LinearOpMode {
                 .build();
 
         Action movementFirstShot = drive.actionBuilder(new Pose2d(0,0,Math.toRadians(0)))
-                .strafeTo(new Vector2d(10, 10))
-                .turnTo(Math.toRadians(13))
+                .strafeTo(new Vector2d(10, -10))
+                .turnTo(Math.toRadians(-12))
 
                 .build();
 
-        Action IntakeFirstRow = drive.actionBuilder(new Pose2d(10,10,Math.toRadians(90)))
-                .strafeTo(new Vector2d(37,10))
-                .strafeTo(new Vector2d(37, 58))
+        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(15,6,Math.toRadians(-165)))
+                .strafeTo(new Vector2d(40,-70))
                 .build();
 
-        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(37, 58, Math.toRadians(25)))
-                .strafeTo(new Vector2d(20, -6))
+        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(40, -70, Math.toRadians(-165)))
+                .strafeTo(new Vector2d(15,-70))
                 .build();
 
-        Action MoveToSecondRow = drive.actionBuilder(new Pose2d(15,-6,Math.toRadians(165)))
-                .strafeTo(new Vector2d(40,70))
+        Action clear = drive.actionBuilder(new Pose2d(15,-70,Math.toRadians (-165)))
+                .strafeTo(new Vector2d(40,-50))
                 .build();
 
-        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(40, 70, Math.toRadians(165)))
-                .strafeTo(new Vector2d(15,70))
+        Action ShootFinal = drive.actionBuilder(new Pose2d(44,-50, Math.toRadians(-17)))
+                .strafeTo(new Vector2d(15,-10))
                 .build();
 
-        Action clear = drive.actionBuilder(new Pose2d(15,70,Math.toRadians (165)))
-                .strafeTo(new Vector2d(40,50))
+
+
+        Action repeat1 = drive.actionBuilder(new Pose2d(15,6,Math.toRadians(-165)))
+                .strafeTo(new Vector2d(40,-70))
                 .build();
 
-        Action ShootFinal = drive.actionBuilder(new Pose2d(44,50, Math.toRadians(17)))
-                .strafeTo(new Vector2d(15,10))
+        Action repeat2 = drive.actionBuilder(new Pose2d(40, -70, Math.toRadians(-165)))
+                .strafeTo(new Vector2d(15,-70))
                 .build();
 
-        Action MoveOutTheWay = drive.actionBuilder(new Pose2d(15,10, Math.toRadians(0)))
-                .strafeTo(new Vector2d(30,10))
+        Action repeat3 = drive.actionBuilder(new Pose2d(15,-70,Math.toRadians (-165)))
+                .strafeTo(new Vector2d(40,-50))
                 .build();
+
+        Action repeat4 = drive.actionBuilder(new Pose2d(44,-50, Math.toRadians(-17)))
+                .strafeTo(new Vector2d(15,-10))
+                .build();
+
+        Action repeat5 = drive.actionBuilder(new Pose2d(15,6,Math.toRadians(-165)))
+                .strafeTo(new Vector2d(40,-70))
+                .build();
+
+        Action repeat6 = drive.actionBuilder(new Pose2d(40, -70, Math.toRadians(-165)))
+                .strafeTo(new Vector2d(15,-70))
+                .build();
+
+        Action repeat7 = drive.actionBuilder(new Pose2d(15,-70,Math.toRadians (-165)))
+                .strafeTo(new Vector2d(40,-50))
+                .build();
+
+        Action repeat8 = drive.actionBuilder(new Pose2d(44,-50, Math.toRadians(-17)))
+                .strafeTo(new Vector2d(15,-10))
+                .build();
+
+        Action MoveOutTheWay = drive.actionBuilder(new Pose2d(15,-10,Math.toRadians(0)))
+                .strafeTo(new Vector2d(25, -10))
+                .build();
+
+
         // ==========================================================
         // ===================== FULL AUTO ==========================
         // ==========================================================
@@ -145,14 +172,6 @@ public class BlueAutoFarMelvin extends LinearOpMode {
                 movementFirstShot,
                 farShootAction(),   // .80 fixed, wait >= 4000 RPM, then feed
 
-                startIntakeAction(1.0),
-                IntakeFirstRow,
-
-
-                MoveBackToShoot,
-                startIntakeAction(0.0),
-                farShootAction(),
-
                 MoveToSecondRow,
                 startIntakeAction(1.0),
                 IntakeSecondRow,
@@ -161,6 +180,37 @@ public class BlueAutoFarMelvin extends LinearOpMode {
                 clear,
 
                 ShootFinal,
+
+                repeat1,
+
+                farShootAction(),
+
+                repeat2,
+
+                startIntakeAction(1),
+
+                repeat3,
+
+                startIntakeAction(0),
+
+                repeat4,
+
+                farShootAction(),
+
+                repeat5,
+
+                farShootAction(),
+
+                repeat6,
+
+                startIntakeAction(1),
+
+                repeat7,
+
+                startIntakeAction(0),
+
+                repeat8,
+
                 farShootAction(),
 
                 MoveOutTheWay,

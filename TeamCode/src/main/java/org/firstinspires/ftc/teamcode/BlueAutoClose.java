@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -37,6 +38,8 @@ public class BlueAutoClose extends LinearOpMode {
     private static final double CLOSE_PWR = 0.35;
     private static final double MID_PWR   = 0.45;
     private static final double FAR_PWR   = 0.54;
+    private static final double HOOD_SHOOT_POS = 0.43; // TeleOp HOOD_SHOOT_POS
+    private static final double HOOD_DEFAULT_POS = 0.5;
 
     private static final double MAX_DIST_FORCE = 8000;
 
@@ -64,6 +67,7 @@ public class BlueAutoClose extends LinearOpMode {
     // =======================
     private DcMotorEx launcher;
     private DcMotor intake, feeder;
+    private Servo hoodL, hoodR;
 
     // =======================
     // Vision
@@ -80,6 +84,10 @@ public class BlueAutoClose extends LinearOpMode {
         intake = hardwareMap.get(DcMotor.class, "intakeMotor");
         feeder = hardwareMap.get(DcMotor.class, "intakeMotor2");
 
+        hoodL = hardwareMap.get(Servo.class, "hood");
+        hoodR = hardwareMap.get(Servo.class, "gate");
+        hoodL.setPosition(HOOD_DEFAULT_POS);
+        hoodR.setPosition(HOOD_DEFAULT_POS);
         // --------- Vision (AprilTag) ----------
         aprilTag = new AprilTagProcessor.Builder().build();
         portal = new VisionPortal.Builder()
@@ -115,32 +123,33 @@ public class BlueAutoClose extends LinearOpMode {
                 .build();
 
 
-        Action movementTurnFirstRow = drive.actionBuilder(new Pose2d(-44,-40,Math.toRadians(47)))
+        Action movementTurnFirstRow = drive.actionBuilder(new Pose2d(-44,-35,Math.toRadians(47)))
                 .turn(Math.toRadians(47))
                 .build();
 
-        Action IntakeFirstRow = drive.actionBuilder(new Pose2d(-44, -40, Math.toRadians(90))) // matches where you actually are
-                .strafeTo(new Vector2d(-55, 10)) // move LEFT (forward while facing left)
+        Action IntakeFirstRow = drive.actionBuilder(new Pose2d(-44, -35, Math.toRadians(90))) // matches where you actually are
+                .strafeTo(new Vector2d(-50, 10)) // move LEFT (forward while facing left)
                 .build();
 
-        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(-55,10,Math.toRadians(47)))
+        Action MoveBackToShoot = drive.actionBuilder(new Pose2d(-50,10,Math.toRadians(47)))
                 .strafeTo(new Vector2d(-44,-40))
                 //.turn(Math.toRadians(-30))
                 .build();
 
         Action MoveToSecondRow = drive.actionBuilder(new Pose2d(-44, -40, Math.toRadians(90)))
                 //.turn(Math.toRadians(35))
-                .strafeTo(new Vector2d(-83, -40))
+                .strafeTo(new Vector2d(-84, -40))
                 .build();
 
-        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(-83, -40, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-83,12))
+        Action IntakeSecondRow = drive.actionBuilder(new Pose2d(-84, -40, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-90,12))
                 .build();
 
         Action ShootFinal = drive.actionBuilder(new Pose2d(-83,12, Math.toRadians(45)))
-                .strafeTo(new Vector2d(-45,-45))
+                .strafeTo(new Vector2d(-45,-40))
                 //.turn(Math.toRadians(-30))
                 .build();
+
 
         // ==========================================================
         // ===================== FULL AUTO (MOVEMENT UNCHANGED) =====
@@ -194,7 +203,7 @@ public class BlueAutoClose extends LinearOpMode {
         return p -> {
             intake.setPower(power);
             // IMPORTANT: If you need feeder during intake, change this to feeder.setPower(power);
-            feeder.setPower(0.0);
+            feeder.setPower(-.2);
             return false;
         };
     }
@@ -254,6 +263,9 @@ public class BlueAutoClose extends LinearOpMode {
         if (d >= 0) lastBaseScalar = baseScalar;
 
         double targetRPM = baseScalar * MAX_RPM;
+
+        hoodL.setPosition(HOOD_SHOOT_POS);
+        hoodR.setPosition(HOOD_SHOOT_POS);
 
         telemetry.addData("Step", "SHOOT (velocity stable latch)");
         telemetry.addData("StableDistance", d);
